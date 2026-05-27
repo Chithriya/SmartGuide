@@ -16,7 +16,7 @@ app = Flask(__name__, static_folder='.')
 CORS(app)
 
 client = Groq(
-    api_key=os.environ.get("Your_grok_APIKEY")
+    api_key=os.environ.get("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")
 )
 
 SYSTEM_PROMPT = """You are a helpful, friendly, and knowledgeable AI Assistant.
