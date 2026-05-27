@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Assistant</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- Demo page background content -->
+<div class="page-bg">
+  <div class="page-header">
+    <div class="image-area">
+      <div class="image-container">
+        <div class="default-logo-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="22" fill="#0b3d91"/>
+            <path d="M14 24a10 10 0 1 1 20 0 10 10 0 0 1-20 0z" fill="rgba(255,255,255,0.15)"/>
+            <circle cx="24" cy="20" r="5" fill="white"/>
+            <path d="M13 35c0-6.075 4.925-11 11-11s11 4.925 11 11" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div>
+        <div class="site-title">AI Assistant</div>
+        <div class="site-sub">Your Intelligent Conversational Partner</div>
+      </div>
+    </div>
+  </div>
+  <div class="page-hero"></div>
+</div>
+<!-- Chatbot Toggle Button -->
+<div class="chat-icon" id="chatToggle" onclick="toggleChat()" title="Chat with AI Assistant">
+  <div class="chat-icon-inner">
+    <svg class="icon-chat" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <svg class="icon-close hidden" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="pulse-ring"></div>
+</div>
+
+<!-- Chatbot Window -->
+<div class="chat-container" id="chatbox">
+
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="header-left">
+      <div class="avatar">
+        <span>A</span>
+        <div class="status-dot"></div>
+      </div>
+      <div class="header-info">
+        <div class="header-name">AI Assistant</div>
+        <div class="header-status">
+          <span class="status-indicator"></span>
+          Online · Ready to help
+        </div>
+      </div>
+    </div>
+    <div class="header-actions">
+
+      <!-- Expand Button -->
+      <button class="header-btn" onclick="toggleExpand()" id="expandBtn" title="Expand">
+        <svg id="expandIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <polyline points="9 21 3 21 3 15"></polyline>
+          <line x1="21" y1="3" x2="14" y2="10"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+        <svg id="collapseIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;">
+          <polyline points="4 14 10 14 10 20"></polyline>
+          <polyline points="20 10 14 10 14 4"></polyline>
+          <line x1="10" y1="14" x2="3" y2="21"></line>
+          <line x1="21" y1="3" x2="14" y2="10"></line>
+        </svg>
+      </button>
+
+      <!-- Three-Dot Menu Button -->
+      <div class="menu-wrapper" id="menuWrapper">
+        <button class="header-btn" onclick="toggleMenu()" id="menuBtn" title="More options">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <circle cx="12" cy="5" r="1.5"/>
+            <circle cx="12" cy="12" r="1.5"/>
+            <circle cx="12" cy="19" r="1.5"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Close Button -->
+      <button class="header-btn close-btn" onclick="toggleChat()" title="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="chat-tabs" id="chatTabs">
+    <button class="tab-btn active" id="tab-chat" onclick="switchTab('chat')"> Chat</button>
+    <button class="tab-btn" id="tab-recommend" onclick="switchTab('recommend')">Recommendation System</button>
+  </div>
+
+
+  <!-- Quick Topics -->
+  <div class="quick-topics" id="quickTopics">
+    <div class="topics-label">Quick Topics</div>
+    <div class="topics-scroll">
+      <button class="topic-chip" onclick="sendQuick('What topics can you help me with?')"> All Topics</button>
+      <button class="topic-chip" onclick="sendQuick('What are the best free online learning platforms?')"> Free Learning</button>
+      <button class="topic-chip" onclick="sendQuick('How do I start learning programming?')"> Programming</button>
+      <button class="topic-chip" onclick="sendQuick('What is Artificial Intelligence and how do I learn it?')"> AI & ML</button>
+      <button class="topic-chip" onclick="sendQuick('How to build a career in Data Science?')"> Data Science</button>
+      <button class="topic-chip" onclick="sendQuick('What is Cloud Computing and how to get started?')"> Cloud</button>
+      <button class="topic-chip" onclick="sendQuick('How do I improve my cyber security skills?')"> Cyber Security</button>
+      <button class="topic-chip" onclick="sendQuick('What is Web Development and where to start?')"> Web Dev</button>
+      <button class="topic-chip" onclick="sendQuick('How to prepare for technical job interviews?')"> Job Tips</button>
+      <button class="topic-chip" onclick="sendQuick('What are the best certifications for IT professionals?')"> Certifications</button>
+      <button class="topic-chip" onclick="sendQuick('How to start freelancing as a developer?')"> Freelancing</button>
+      <button class="topic-chip" onclick="sendQuick('Explain Python programming for beginners')"> Python</button>
+      <button class="topic-chip" onclick="sendQuick('What are the latest trends in technology?')"> Tech Trends</button>
+    </div>
+  </div>
+
+  <!-- Chat Body -->
+  <div class="chat-body" id="chatBody">
+    <div class="welcome-message">
+      <div class="welcome-avatar">🤖</div>
+      <div class="welcome-text">
+        <strong>Hello! I'm your AI Assistant.</strong>
+        <p>I can help you with technology, education, career guidance, programming, general knowledge, and much more. Ask me anything!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Typing Indicator -->
+  <div class="typing-indicator hidden" id="typingIndicator">
+    <div class="typing-avatar">A</div>
+    <div class="typing-dots">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="typing-text">Thinking...</div>
+  </div>
+
+  <!-- Chat Footer -->
+  <div class="chat-footer" id="chatFooter">
+    <div class="input-wrapper">
+      <input type="text" id="userInput" placeholder="Ask me anything..." autocomplete="off" onkeydown="handleKey(event)">
+
+      <!-- Mic Button -->
+      <button class="mic-btn" id="micBtn" onclick="toggleVoice()" title="Speak your question">
+        <svg id="micIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="9" y="2" width="6" height="11" rx="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M5 10a7 7 0 0 0 14 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="9" y1="21" x2="15" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <!-- Listening pulse rings (hidden by default) -->
+        <span class="mic-pulse" id="micPulse"></span>
+      </button>
+
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </button>
+    </div>
+    <!-- Live transcript shown while speaking -->
+    <div class="voice-transcript hidden" id="voiceTranscript">
+      <span class="transcript-dot"></span>
+      <span id="transcriptText">Listening…</span>
+    </div>
+    <div class="footer-note">Powered by AI Assistant</div>
+  </div>
+
+  <!-- Recommend Tab Content -->
+  <div class="recommend-screen hidden" id="recommendScreen">
+    <div class="recommend-screen-body">
+      <div class="recommend-intro">
+        <div class="recommend-intro-title">Learning Path Recommendation</div>
+        <div class="recommend-intro-sub">Fill in your details and we'll suggest the best learning paths for you</div>
+      </div>
+      <div class="form-group">
+        <label>Your Highest Qualification</label>
+        <select id="rec_qualification">
+          <option value="">-- Select --</option>
+          <option value="No formal qualification needed">No formal qualification</option>
+          <option value="School (up to 10th)">School (up to 10th)</option>
+          <option value="High School (12th)">High School (12th)</option>
+          <option value="ITI Certificate">ITI Certificate</option>
+          <option value="Diploma">Diploma</option>
+          <option value="Graduate (Any Stream)">Graduate (Any Stream)</option>
+          <option value="Graduate (CS/IT)">Graduate (CS/IT)</option>
+          <option value="Post Graduate">Post Graduate</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Your Area of Interest</label>
+        <select id="rec_interest">
+          <option value="">-- Select --</option>
+          <option value="Web Development">Web Development</option>
+          <option value="Artificial Intelligence and Machine Learning">AI & Machine Learning</option>
+          <option value="Data Science and Analytics">Data Science & Analytics</option>
+          <option value="Cyber Security">Cyber Security</option>
+          <option value="Cloud Computing">Cloud Computing</option>
+          <option value="Embedded Systems and IoT">Embedded Systems & IoT</option>
+          <option value="Database and SQL">Database & SQL</option>
+          <option value="Basic Computer Skills">Basic Computer Skills</option>
+          <option value="Chip Design and VLSI">Chip Design & VLSI</option>
+          <option value="Python Programming">Python Programming</option>
+          <option value="Digital Marketing">Digital Marketing</option>
+          <option value="Graphic Design">Graphic Design</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Your Current Skill Level</label>
+        <select id="rec_skill">
+          <option value="">-- Select --</option>
+          <option value="Complete Beginner (No prior knowledge)">Complete Beginner</option>
+          <option value="Basic (Some computer knowledge)">Basic</option>
+          <option value="Intermediate (Working knowledge)">Intermediate</option>
+          <option value="Advanced (Professional level)">Advanced</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Your Career Goal</label>
+        <select id="rec_goal">
+          <option value="">-- Select --</option>
+          <option value="Get a Job">Get a Job</option>
+          <option value="Upgrade Skills for Current Job">Upgrade Skills</option>
+          <option value="Start a Business">Start a Business</option>
+          <option value="Higher Education">Higher Education</option>
+          <option value="Learn Something New">Learn Something New</option>
+        </select>
+      </div>
+      <button class="recommend-submit-btn" onclick="submitRecommendation()">
+        Get My Recommendations
+      </button>
+    </div>
+  </div>
+
+  <!-- In-Chatbot History Panel -->
+  <div class="history-panel hidden" id="historyPanel">
+    <div class="history-panel-header">
+      <button class="history-back-btn" onclick="closeHistoryPanel()" title="Back to chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <span class="history-panel-title">Chat History</span>
+      <button class="history-clear-btn" onclick="clearAllHistory()" title="Clear all history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+      </button>
+    </div>
+    <div class="history-panel-body" id="historyPanelBody">
+      <!-- Sessions rendered here by JS -->
+    </div>
+  </div>
+
+</div><!-- end chat-container -->
+
+
+
+<!-- Feedback Modal -->
+<div class="modal-overlay hidden" id="feedbackModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title"> Provide Feedback</span>
+      <button class="modal-close" onclick="closeFeedbackModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:12px;color:var(--text-secondary,#555);font-size:0.9rem;">How was your experience with AI Assistant?</p>
+      <div class="feedback-stars" id="feedbackStars">
+        <span class="star" data-val="1" onclick="setRating(1)">★</span>
+        <span class="star" data-val="2" onclick="setRating(2)">★</span>
+        <span class="star" data-val="3" onclick="setRating(3)">★</span>
+        <span class="star" data-val="4" onclick="setRating(4)">★</span>
+        <span class="star" data-val="5" onclick="setRating(5)">★</span>
+      </div>
+      <textarea id="feedbackText" placeholder="Share your comments or suggestions..." rows="4"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn primary" onclick="submitFeedback()">Submit Feedback</button>
+      <button class="modal-btn" onclick="closeFeedbackModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating dropdown menu — outside chat-container so it's never clipped -->
+<div class="menu-dropdown hidden" id="menuDropdown">
+  <button class="menu-item" onclick="viewChatHistory()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    View Chat History
+  </button>
+  <button class="menu-item" onclick="openFeedback()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Provide Feedback
+  </button>
+  <div class="menu-divider"></div>
+  <button class="menu-item danger" onclick="clearChatConfirm()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+    Clear Chat
+  </button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

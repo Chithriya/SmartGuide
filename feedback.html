@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Feedback Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #0b3d91;
+    --primary-light: #1a56c4;
+    --primary-pale: #eef3fc;
+    --accent: #f59e0b;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --border: #e4e8f0;
+    --text: #1a1a2e;
+    --text-mid: #4b5563;
+    --text-soft: #9ca3af;
+    --radius: 14px;
+    --shadow: 0 4px 20px rgba(11,61,145,0.08);
+    --shadow-lg: 0 8px 32px rgba(11,61,145,0.13);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: linear-gradient(135deg, #0b3d91 0%, #1a56c4 100%);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 16px rgba(11,61,145,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .topbar-logo {
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .topbar-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.2px;
+  }
+
+  .topbar-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 400;
+    margin-top: 1px;
+  }
+
+  .topbar-badge {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+
+  .page-heading {
+    margin-bottom: 28px;
+  }
+
+  .page-heading h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .page-heading p {
+    font-size: 13.5px;
+    color: var(--text-mid);
+    margin-top: 4px;
+  }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 18px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 3px 3px 0 0;
+  }
+
+  .stat-card:nth-child(2)::before { background: var(--accent); }
+  .stat-card:nth-child(3)::before { background: var(--success); }
+  .stat-card:nth-child(4)::before { background: #8b5cf6; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .stat-card:nth-child(1) { animation-delay: 0.05s; }
+  .stat-card:nth-child(2) { animation-delay: 0.10s; }
+  .stat-card:nth-child(3) { animation-delay: 0.15s; }
+  .stat-card:nth-child(4) { animation-delay: 0.20s; }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+  }
+
+  .stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--text-mid);
+  }
+
+  /* ── RATING DISTRIBUTION ── */
+  .dist-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 28px;
+    animation: fadeUp 0.4s 0.25s ease both;
+  }
+
+  .dist-card h2 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dist-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .dist-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-mid);
+    width: 52px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .dist-bar-bg {
+    flex: 1;
+    background: #f0f2f7;
+    border-radius: 6px;
+    height: 10px;
+    overflow: hidden;
+  }
+
+  .dist-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--accent), #f97316);
+    transition: width 0.8s cubic-bezier(0.34,1.2,0.64,1);
+    width: 0%;
+  }
+
+  .dist-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-mid);
+    width: 28px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ── TABLE CARD ── */
+  .table-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    animation: fadeUp 0.4s 0.3s ease both;
+  }
+
+  .table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    background: #fafbff;
+  }
+
+  .table-header h2 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .table-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .btn {
+    padding: 7px 16px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-outline {
+    background: #fff;
+    border: 1px solid var(--border);
+    color: var(--text-mid);
+  }
+
+  .btn-outline:hover { background: #f5f7fc; border-color: #c8d0e0; }
+
+  .btn-danger {
+    background: #fff5f5;
+    border: 1px solid #fecaca;
+    color: var(--danger);
+  }
+
+  .btn-danger:hover { background: #fee2e2; }
+
+  .btn svg { width: 13px; height: 13px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    padding: 11px 18px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-soft);
+    background: #f8f9fd;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #f0f2f7;
+    transition: background 0.12s;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  tbody tr:hover { background: #fafbff; }
+  tbody tr:last-child { border-bottom: none; }
+
+  td {
+    padding: 13px 18px;
+    font-size: 13px;
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  .td-num {
+    color: var(--text-soft);
+    font-size: 12px;
+    font-weight: 600;
+    width: 40px;
+  }
+
+  .td-date {
+    color: var(--text-mid);
+    font-size: 12px;
+    white-space: nowrap;
+    width: 160px;
+  }
+
+  .stars-display {
+    display: flex;
+    gap: 2px;
+    font-size: 15px;
+  }
+
+  .star-filled { color: var(--accent); }
+  .star-empty  { color: #e5e7eb; }
+
+  .comment-cell {
+    color: var(--text-mid);
+    font-size: 13px;
+    line-height: 1.5;
+    max-width: 340px;
+  }
+
+  .no-comment {
+    color: var(--text-soft);
+    font-style: italic;
+    font-size: 12px;
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 64px 24px;
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 14px;
+  }
+
+  .empty-state h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .empty-state p {
+    font-size: 13px;
+    color: var(--text-soft);
+  }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.4s 0.28s ease both;
+  }
+
+  .filter-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12.5px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .filter-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .topbar { padding: 0 16px; }
+    .container { padding: 20px 14px 48px; }
+    td, th { padding: 10px 12px; }
+    .comment-cell { max-width: 180px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">🎓</div>
+    <div>
+      <div class="topbar-title">AI Assistant</div>
+      <div class="topbar-sub">Admin Feedback Dashboard</div>
+    </div>
+  </div>
+  <div class="topbar-badge" id="lastRefreshed">Loading…</div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <div class="page-heading">
+    <h1>User Feedback Overview</h1>
+    <p>All feedback submitted via the AI Assistant chatbot — stored in browser localStorage.</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row" id="statsRow">
+    <div class="stat-card">
+      <div class="stat-label">Total Responses</div>
+      <div class="stat-value" id="statTotal">—</div>
+      <div class="stat-sub">All time</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Average Rating</div>
+      <div class="stat-value" id="statAvg">—</div>
+      <div class="stat-sub" id="statStars">out of 5 ⭐</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">5-Star Reviews</div>
+      <div class="stat-value" id="statFive">—</div>
+      <div class="stat-sub" id="statFivePct">of total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">With Comments</div>
+      <div class="stat-value" id="statComments">—</div>
+      <div class="stat-sub" id="statCommentPct">of total</div>
+    </div>
+  </div>
+
+  <!-- RATING DISTRIBUTION -->
+  <div class="dist-card">
+    <h2>📊 Rating Distribution</h2>
+    <div id="distRows"></div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" onclick="setFilter(0, this)">All</button>
+    <button class="filter-btn" onclick="setFilter(5, this)">⭐⭐⭐⭐⭐ 5 Stars</button>
+    <button class="filter-btn" onclick="setFilter(4, this)">⭐⭐⭐⭐ 4 Stars</button>
+    <button class="filter-btn" onclick="setFilter(3, this)">⭐⭐⭐ 3 Stars</button>
+    <button class="filter-btn" onclick="setFilter(2, this)">⭐⭐ 2 Stars</button>
+    <button class="filter-btn" onclick="setFilter(1, this)">⭐ 1 Star</button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-card">
+    <div class="table-header">
+      <h2>💬 Feedback Entries</h2>
+      <div class="table-actions">
+        <button class="btn btn-outline" onclick="loadData()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Refresh
+        </button>
+        <button class="btn btn-danger" onclick="clearFeedback()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          Clear All
+        </button>
+      </div>
+    </div>
+
+    <div id="tableWrap">
+      <table id="feedbackTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Date & Time</th>
+            <th>Rating</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody id="feedbackBody"></tbody>
+      </table>
+      <div class="empty-state hidden" id="emptyState">
+        <div class="empty-icon">📭</div>
+        <h3>No feedback yet</h3>
+        <p>Feedback submitted through the chatbot will appear here.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const FEEDBACK_KEY = 'ai_feedback';
+  let allFeedback = [];
+  let activeFilter = 0;
+
+  function loadData() {
+    try {
+      allFeedback = JSON.parse(localStorage.getItem(FEEDBACK_KEY) || '[]');
+    } catch {
+      allFeedback = [];
+    }
+
+    // Sort newest first
+    allFeedback.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    updateStats();
+    updateDistribution();
+    renderTable();
+
+    document.getElementById('lastRefreshed').textContent =
+      'Refreshed ' + new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function updateStats() {
+    const total = allFeedback.length;
+    const avg = total ? (allFeedback.reduce((s, f) => s + f.rating, 0) / total) : 0;
+    const fiveCount = allFeedback.filter(f => f.rating === 5).length;
+    const commentCount = allFeedback.filter(f => f.comment && f.comment.trim()).length;
+
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statAvg').textContent = total ? avg.toFixed(1) : '—';
+    document.getElementById('statFive').textContent = fiveCount;
+    document.getElementById('statFivePct').textContent = total ? Math.round(fiveCount / total * 100) + '% of total' : '—';
+    document.getElementById('statComments').textContent = commentCount;
+    document.getElementById('statCommentPct').textContent = total ? Math.round(commentCount / total * 100) + '% of total' : '—';
+  }
+
+  function updateDistribution() {
+    const container = document.getElementById('distRows');
+    const total = allFeedback.length;
+    container.innerHTML = '';
+
+    [5, 4, 3, 2, 1].forEach(star => {
+      const count = allFeedback.filter(f => f.rating === star).length;
+      const pct = total ? Math.round(count / total * 100) : 0;
+
+      const row = document.createElement('div');
+      row.className = 'dist-row';
+      row.innerHTML = `
+        <span class="dist-label">${'★'.repeat(star)}</span>
+        <div class="dist-bar-bg">
+          <div class="dist-bar-fill" data-pct="${pct}" style="width:0%"></div>
+        </div>
+        <span class="dist-count">${count}</span>
+      `;
+      container.appendChild(row);
+    });
+
+    // Animate bars after render
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.dist-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.pct + '%';
+      });
+    });
+  }
+
+  function starsHTML(rating) {
+    let html = '';
+    for (let i = 1; i <= 5; i++) {
+      html += `<span class="${i <= rating ? 'star-filled' : 'star-empty'}">★</span>`;
+    }
+    return `<div class="stars-display">${html}</div>`;
+  }
+
+  function setFilter(stars, btn) {
+    activeFilter = stars;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable();
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('feedbackBody');
+    const empty = document.getElementById('emptyState');
+    const table = document.getElementById('feedbackTable');
+
+    const filtered = activeFilter === 0
+      ? allFeedback
+      : allFeedback.filter(f => f.rating === activeFilter);
+
+    if (filtered.length === 0) {
+      table.style.display = 'none';
+      empty.classList.remove('hidden');
+      return;
+    }
+
+    table.style.display = '';
+    empty.classList.add('hidden');
+
+    tbody.innerHTML = filtered.map((f, i) => `
+      <tr style="animation-delay:${i * 0.03}s">
+        <td class="td-num">${i + 1}</td>
+        <td class="td-date">${f.date || '—'}</td>
+        <td>${starsHTML(f.rating)}</td>
+        <td class="comment-cell">
+          ${f.comment && f.comment.trim()
+            ? escapeHtml(f.comment)
+            : '<span class="no-comment">No comment</span>'}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.appendChild(document.createTextNode(str));
+    return d.innerHTML;
+  }
+
+  function clearFeedback() {
+    if (allFeedback.length === 0) {
+      alert('No feedback to clear.');
+      return;
+    }
+    if (!confirm(`Delete all ${allFeedback.length} feedback entries? This cannot be undone.`)) return;
+    localStorage.removeItem(FEEDBACK_KEY);
+    allFeedback = [];
+    updateStats();
+    updateDistribution();
+    renderTable();
+  }
+
+  // Load on page open
+  loadData();
+</script>
+</body>
+</html>
